@@ -5,16 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Old Geezer</title>
     <style>
-        .images {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            list-style-type: none;
+        * {
+            --color-text: rgb(250,250,250);
+            --color-accent: #179FFF;
+            --color-accent-hover: #1486d8;
+            --color-background: #433e56;
+        
+            --button-border-radius: 5px;
+        
+            color: var(--color-text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        * button {
+            color: black;
+            border-radius: var(--button-border-radius);
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+        body {
+            overflow: hidden;
+        }
+        .container {
+            width: 100vw;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            margin: 0;
+            padding: 0;
+            color: var(--color-text); /* sets default text color */
+            background-color: var(--color-background);
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: absolute;
+        }
+        .container .wrapper {
+            padding: 20px 10px;
+        }
+        .container .wrapper .title-wrapper {
+            padding: 10px;
+        }
+        .container .wrapper .title-wrapper .title {
+            font-size: 3em;
+            text-align: center;
+            margin: 0;
             padding: 0;
         }
-        .images img {
-            width: 100%;
-            height: auto;
+        .container .wrapper .nav {
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+        }
+        .container .wrapper .nav ul {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            margin: 0;
+            padding: 10px;
+            list-style: none;
+        }
+        .container .wrapper .nav ul li {
+            padding: 10px;
+        }
+        .container .wrapper .nav ul li .query {
+            color: var(--color-text);
+            font-weight: 600;
+            font-size: 16px;
+            padding: 10px 20px;
+            background: var(--color-accent);
+            transition: 100ms ease all;
+        }
+        .container .wrapper .nav ul li .query:hover {
+            background: var(--color-accent-hover);
+        }
+        .container .wrapper .nav ul li .query:focus {
+            outline: 1px solid var(--color-text);
+        }
+        .container .wrapper .content {
+            padding: 10px;
+        }
+        .container .wrapper .content .images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr;
+            grid-column-gap: 10px;
+            grid-row-gap: 0;
+        }
+        .container .wrapper .content .images .f, .container .wrapper .content .images .s, .container .wrapper .content .images .t {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
         }
     </style>
     <link rel="stylesheet" href="./styles/index.css">
@@ -55,13 +137,13 @@
     </div>
 
     <script>
-        const imageDirectory = './assets/images/';
+        const imageDirectory = window.location.href + '/assets/images/';
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     
         function loadImages() {
             const imageList = document.getElementById('imageList');
     
-            fetch('./data/images.json')
+            fetch(window.location.href + '/data/images.json')
                 .then(response => response.json())
                 .then(images => {
                     const divs = Array.from(imageList.querySelectorAll('.images > div'));
