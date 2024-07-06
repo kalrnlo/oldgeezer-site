@@ -31,6 +31,9 @@ jobs:
           git add src/public/assets/files.json
           git commit -m "Add files.json"
 
+      - name: Verify remote url
+        run: git remote -v
+
       - name: Push changes
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
