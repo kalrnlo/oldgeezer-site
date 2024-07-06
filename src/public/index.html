@@ -172,8 +172,8 @@
     </div>
 
     <script>
-        const imageDirectory = window.location.href + '/assets/images/';
-        const videoDirectory = window.location.href + '/assets/videos/';
+        const imageDirectory = '/assets/images/';
+        const videoDirectory = '/assets/videos/';
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
         const videoExtensions = ['mp4', 'webm', 'ogg'];
 
@@ -181,7 +181,7 @@
         const buttons = document.querySelectorAll('.query');
 
         function loadMedia(filter = 'all') {
-            fetch(window.location.href + '/data/images.json')
+            fetch('/data/images.json')
                 .then(response => response.json())
                 .then(media => {
                     displayMedia(media, filter);
