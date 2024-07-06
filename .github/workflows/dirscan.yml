@@ -21,7 +21,6 @@ jobs:
 
       - name: Save JSON array to file
         run: |
-          mkdir -p src/public/assets
           echo $files > src/public/assets/files.json
 
       - name: Commit files.json
@@ -31,12 +30,11 @@ jobs:
           git add src/public/assets/files.json
           git commit -m "Add files.json"
 
-      - name: Verify remote url
-        run: git remote -v
+      - name: Set remote URL
+        run: git remote set-url origin https://github.com/${{ github.repository }}.git
 
       - name: Push changes
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git
           git push origin main
