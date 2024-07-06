@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Old Geezer</title>
     <style>
+        .images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            list-style-type: none;
+            padding: 0;
+        }
+        .images img {
+            width: 100%;
+            height: auto;
+        }
         * {
             --color-text: rgb(250,250,250);
             --color-accent: #179FFF;
