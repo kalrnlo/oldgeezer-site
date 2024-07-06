@@ -22,7 +22,7 @@ jobs:
       - name: Save JSON array to file
         run: |
           mkdir -p assets
-          echo $files > assets/files.json
+          echo $files > src/public/assets/files.json
 
       - name: Commit files.json
         run: |
