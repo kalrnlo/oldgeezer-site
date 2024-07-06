@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload the entire repository or the specific directory containing your static content
-          path: '.'
+          path: './src/public'
 
       - name: Deploy to GitHub Pages
         id: deployment
