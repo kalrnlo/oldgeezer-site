@@ -54,12 +54,12 @@
         const imageDirectory = './assets/images/';
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
+        const images = [
+            // This array will be automatically updated by the GitHub Action
+        ];
+
         function loadImages() {
             const imageList = document.getElementById('imageList');
-
-            const images = [
-                'GRq3-QOWcAAHH6A.jpg',
-            ];
 
             images.forEach(image => {
                 const extension = image.split('.').pop().toLowerCase();
@@ -74,7 +74,7 @@
                 }
             });
         }
-
+        
         loadImages();
     </script>
 </body>
