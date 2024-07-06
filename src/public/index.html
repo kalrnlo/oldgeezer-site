@@ -5,80 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Old Geezer</title>
     <style>
-        .images {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            list-style-type: none;
-            padding: 0;
-        }
-        .images img {
-            width: 100%;
-            height: auto;
-        }
+        /* Basic Reset */
         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             --color-text: rgb(250,250,250);
             --color-accent: #179FFF;
             --color-accent-hover: #1486d8;
             --color-background: #433e56;
-        
             --button-border-radius: 5px;
-        
             color: var(--color-text);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        * button {
+
+        body {
+            overflow: hidden;
+            background-color: var(--color-background);
+        }
+
+        button {
             color: black;
             border-radius: var(--button-border-radius);
             border: none;
             outline: none;
             cursor: pointer;
         }
-        body {
-            overflow: hidden;
-        }
+
         .container {
             width: 100vw;
             height: 100vh;
             left: 0;
             top: 0;
-            margin: 0;
-            padding: 0;
-            color: var(--color-text); /* sets default text color */
-            background-color: var(--color-background);
             overflow-y: auto;
             overflow-x: hidden;
             position: absolute;
         }
-        .container .wrapper {
+
+        .wrapper {
             padding: 20px 10px;
         }
-        .container .wrapper .title-wrapper {
+
+        .title-wrapper {
             padding: 10px;
         }
-        .container .wrapper .title-wrapper .title {
+
+        .title {
             font-size: 3em;
             text-align: center;
-            margin: 0;
-            padding: 0;
         }
-        .container .wrapper .nav {
-            border-bottom: 2px solid rgba(255,255,255,0.1);
+
+        .nav {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 10px;
         }
-        .container .wrapper .nav ul {
+
+        .nav ul {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: row;
             margin: 0;
             padding: 10px;
             list-style: none;
         }
-        .container .wrapper .nav ul li {
+
+        .nav ul li {
             padding: 10px;
         }
-        .container .wrapper .nav ul li .query {
+
+        .query {
             color: var(--color-text);
             font-weight: 600;
             font-size: 16px;
@@ -86,31 +81,60 @@
             background: var(--color-accent);
             transition: 100ms ease all;
         }
-        .container .wrapper .nav ul li .query:hover {
+
+        .query:hover {
             background: var(--color-accent-hover);
         }
-        .container .wrapper .nav ul li .query:focus {
+
+        .query:focus {
             outline: 1px solid var(--color-text);
         }
-        .container .wrapper .content {
+
+        .content {
             padding: 10px;
         }
-        .container .wrapper .content .images {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: 1fr;
-            grid-column-gap: 10px;
-            grid-row-gap: 0;
-        }
-        .container .wrapper .content .images .f, .container .wrapper .content .images .s, .container .wrapper .content .images .t {
+
+        .images {
             display: flex;
-            justify-content: flex-start;
-            align-items: center;
+            gap: 10px;
+        }
+
+        .images div {
+            flex: 1;
+            display: flex;
             flex-direction: column;
             gap: 10px;
         }
+
+        .images img,
+        .images video {
+            width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 900px) {
+            .images {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .images div {
+                flex: none;
+            }
+        }
+        @media (max-width: 500px) {
+            .images {
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+                gap: 16px;
+            }
+
+            .images div {
+                flex: none;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="./styles/index.css">
 </head>
 <body>
     <div class="container">
@@ -148,40 +172,67 @@
     </div>
 
     <script>
-        const imageDirectory = window.location.href + '/assets/images/';
+        const imageDirectory = './assets/images/';
+        const videoDirectory = './assets/videos/';
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-    
-        function loadImages() {
-            const imageList = document.getElementById('imageList');
-    
-            fetch(window.location.href + '/data/images.json')
+        const videoExtensions = ['mp4', 'webm', 'ogg'];
+
+        const imageList = document.getElementById('imageList');
+        const buttons = document.querySelectorAll('.query');
+
+        function loadMedia(filter = 'all') {
+            fetch('./data/images.json')
                 .then(response => response.json())
-                .then(images => {
-                    const divs = Array.from(imageList.querySelectorAll('.images > div'));
-    
-                    images.forEach((image, index) => {
-                        const extension = image.split('.').pop().toLowerCase();
-                        if (imageExtensions.includes(extension)) {
-                            const a = document.createElement("a");
-                            const img = document.createElement('img');
-                            a.href = imageDirectory + image;
-                            a.className = "image-link"; // corrected from a.class to a.className
-                            a.target = "_blank";
-                            a.rel = "noopener noreferrer";
-                            img.src = imageDirectory + image;
-                            img.alt = image;
-                            img.loading = "lazy";
-                            a.appendChild(img);
-                            divs[index % divs.length].appendChild(a);
-                        }
-                    });
+                .then(media => {
+                    displayMedia(media, filter);
                 })
                 .catch(error => {
-                    console.error('Error loading images:', error);
+                    console.error('Error loading media:', error);
                 });
         }
-    
-        loadImages();
-    </script>    
+
+        function displayMedia(media, filter = 'all') {
+            const divs = Array.from(imageList.querySelectorAll('.images > div'));
+            divs.forEach(div => div.innerHTML = '');
+
+            let items = media.filter(item => {
+                const extension = item.split('.').pop().toLowerCase();
+                return filter === 'all' ||
+                       (filter === 'images' && imageExtensions.includes(extension)) ||
+                       (filter === 'videos' && videoExtensions.includes(extension));
+            });
+
+            items.forEach((item, index) => {
+                const extension = item.split('.').pop().toLowerCase();
+                const a = document.createElement("a");
+                const mediaElement = imageExtensions.includes(extension) ? document.createElement('img') : document.createElement('video');
+
+                a.href = (imageExtensions.includes(extension) ? imageDirectory : videoDirectory) + item;
+                a.className = "media-link";
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+
+                mediaElement.src = (imageExtensions.includes(extension) ? imageDirectory : videoDirectory) + item;
+                mediaElement.alt = item;
+                mediaElement.loading = "lazy";
+
+                if (mediaElement.tagName === 'VIDEO') {
+                    mediaElement.controls = true;
+                }
+
+                a.appendChild(mediaElement);
+                divs[index % divs.length].appendChild(a);
+            });
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.classList.contains('images') ? 'images' : button.classList.contains('videos') ? 'videos' : 'all';
+                loadMedia(filter);
+            });
+        });
+
+        loadMedia();
+    </script>
 </body>
 </html>
