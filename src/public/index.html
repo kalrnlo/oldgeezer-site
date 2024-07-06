@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Old Geezer</title>
+    <style>
+        .images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            list-style-type: none;
+            padding: 0;
+        }
+        .images img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+    <link rel="stylesheet" href="./styles/index.css">
+</head>
+<body>
+    <div class="container">
+        <div class="wrapper">
+            <div class="title-wrapper">
+                <h1 class="title">Old Geezer Photos</h1>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li>
+                        <button class="query all">
+                            All
+                        </button>
+                    </li>
+                    <li>
+                        <button class="query images">
+                            Images
+                        </button>
+                    </li>
+                    <li>
+                        <button class="query videos">
+                            Videos
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            <div class="content">
+                <ul class="images" id="imageList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const imageDirectory = './assets/images/';
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+        function loadImages() {
+            const imageList = document.getElementById('imageList');
+
+            const images = [
+                'GRq3-QOWcAAHH6A.jpg',
+            ];
+
+            images.forEach(image => {
+                const extension = image.split('.').pop().toLowerCase();
+                if (imageExtensions.includes(extension)) {
+                    const li = document.createElement('li');
+                    const img = document.createElement('img');
+                    img.src = imageDirectory + image;
+                    img.alt = image;
+                    img.loading = "lazy";
+                    li.appendChild(img);
+                    imageList.appendChild(li);
+                }
+            });
+        }
+
+        loadImages();
+    </script>
+</body>
+</html>
