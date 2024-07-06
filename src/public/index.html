@@ -17,7 +17,7 @@
             height: auto;
         }
     </style>
-    <link rel="stylesheet" href="./styles/index.css">
+    <link rel="stylesheet" href="/oldgeezer-site/styles/index.css">
 </head>
 <body>
     <div class="container">
@@ -51,14 +51,20 @@
     </div>
 
     <script>
-        const imageDirectory = './assets/images/';
+        const imageDirectory = '/oldgeezer-site/assets/images/';
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
-        const images = [
-            // This array will be automatically updated by the GitHub Action
-        ];
+        async function fetchImages() {
+            try {
+                const response = await fetch('/oldgeezer-site/assets/files.json');
+                const images = await response.json();
+                loadImages(images);
+            } catch (error) {
+                console.error('Error fetching image list:', error);
+            }
+        }
 
-        function loadImages() {
+        function loadImages(images) {
             const imageList = document.getElementById('imageList');
 
             images.forEach(image => {
@@ -74,8 +80,8 @@
                 }
             });
         }
-        
-        loadImages();
+
+        fetchImages();
     </script>
 </body>
 </html>
