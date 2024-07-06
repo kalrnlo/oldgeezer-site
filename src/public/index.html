@@ -17,7 +17,7 @@
             height: auto;
         }
     </style>
-    <link rel="stylesheet" href="/oldgeezer-site/styles/index.css">
+    <link rel="stylesheet" href="./styles/index.css">
 </head>
 <body>
     <div class="container">
@@ -45,43 +45,50 @@
                 </ul>
             </nav>
             <div class="content">
-                <ul class="images" id="imageList"></ul>
+                <div class="images" id="imageList">
+                    <div class="f"></div>
+                    <div class="s"></div>
+                    <div class="t"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const imageDirectory = '/oldgeezer-site/assets/images/';
+        const imageDirectory = './assets/images/';
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-
-        async function fetchImages() {
-            try {
-                const response = await fetch('/oldgeezer-site/assets/files.json');
-                const images = await response.json();
-                loadImages(images);
-            } catch (error) {
-                console.error('Error fetching image list:', error);
-            }
-        }
-
-        function loadImages(images) {
+    
+        function loadImages() {
             const imageList = document.getElementById('imageList');
-
-            images.forEach(image => {
-                const extension = image.split('.').pop().toLowerCase();
-                if (imageExtensions.includes(extension)) {
-                    const li = document.createElement('li');
-                    const img = document.createElement('img');
-                    img.src = imageDirectory + image;
-                    img.alt = image;
-                    img.loading = "lazy";
-                    li.appendChild(img);
-                    imageList.appendChild(li);
-                }
-            });
+    
+            fetch('./data/images.json')
+                .then(response => response.json())
+                .then(images => {
+                    const divs = Array.from(imageList.querySelectorAll('.images > div'));
+    
+                    images.forEach((image, index) => {
+                        const extension = image.split('.').pop().toLowerCase();
+                        if (imageExtensions.includes(extension)) {
+                            const a = document.createElement("a");
+                            const img = document.createElement('img');
+                            a.href = imageDirectory + image;
+                            a.className = "image-link"; // corrected from a.class to a.className
+                            a.target = "_blank";
+                            a.rel = "noopener noreferrer";
+                            img.src = imageDirectory + image;
+                            img.alt = image;
+                            img.loading = "lazy";
+                            a.appendChild(img);
+                            divs[index % divs.length].appendChild(a);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading images:', error);
+                });
         }
-
-        fetchImages();
-    </script>
+    
+        loadImages();
+    </script>    
 </body>
 </html>
