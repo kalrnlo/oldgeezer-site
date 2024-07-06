@@ -1,0 +1,33 @@
+name: Update Image List
+
+on:
+  push:
+    paths:
+      - 'assets/images/**'
+  workflow_dispatch:
+
+jobs:
+  update-image-list:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update image list
+        run: |
+          # Get list of image files
+          IMAGE_LIST=$(ls -1 src/public/assets/images | grep -E "\.(jpg|jpeg|png|gif)$" | sed 's/^/                "/;s/$/"/' | tr '\n' ',')
+          
+          # Remove trailing comma
+          IMAGE_LIST=${IMAGE_LIST%,}
+          
+          # Update the HTML file
+          sed -i "/const images = \[/,/\];/c\        const images = [\n$IMAGE_LIST\n        ];" index.html
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git config --local user.name "GitHub Action"
+          git add index.html
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update image list"
+          git push
