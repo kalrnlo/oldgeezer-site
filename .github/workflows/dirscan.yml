@@ -16,18 +16,12 @@ jobs:
       - name: List files in directory
         id: list_files
         run: |
-          FILES=$(ls src/public/assets/images)
+          FILES=$(ls -1 src/public/assets/images | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "files=$FILES" >> $GITHUB_ENV
-
-      - name: Create JSON array
-        id: create_json
-        run: |
-          FILES_ARRAY=$(echo $files | jq -R 'split(" ")')
-          echo "files_array=$FILES_ARRAY" >> $GITHUB_ENV
 
       - name: Save JSON array to file
         run: |
-          echo $files_array > files.json
+          echo $files > files.json
           
       - name: Upload JSON file as artifact
         uses: actions/upload-artifact@v3
