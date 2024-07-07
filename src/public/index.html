@@ -191,6 +191,11 @@
 </head>
 <body>
     <div class="container">
+        <div class="translater">
+            <button class="translate" onclick="changeLanguage()">
+                Traduir al català
+            </button>
+        </div>
         <div class="wrapper">
             <div class="title-wrapper">
                 <h1 class="title">Old Geezer Photos</h1>
@@ -298,6 +303,54 @@
             modal.style.display = 'none';
         }
 
+        function getLanguage() {
+            const currentUrl = window.location.href;
+            const url = new URL(currentUrl);
+            const params = new URLSearchParams(url.search);
+            return params.get('language');
+        }
+        
+        function translate() {
+            const language = getLanguage();
+        
+            if (language === "catalan") {
+                const title = document.getElementsByClassName("title")[0];
+                const txt_title = "Fotos de Old Geezer";
+                title.innerHTML = txt_title;
+            } else if (language === "english") {
+                const title = document.getElementsByClassName("title")[0];
+                const txt_title = "Old Geezer Photos";
+                title.innerHTML = txt_title;
+            } else {
+                const currentUrl = window.location.href;
+                const url = new URL(currentUrl);
+                const params = new URLSearchParams(url.search);
+                params.set('language', 'english');
+                const newUrl = `${url.origin}${url.pathname}?${params.toString()}`;
+                window.location.href = newUrl; // This reloads the page with the new parameter
+            }
+        }
+
+        function changeLanguage() {
+            const language = getLanguage();
+
+            if (language === "catalan") {
+                const currentUrl = window.location.href;
+                const url = new URL(currentUrl);
+                const params = new URLSearchParams(url.search);
+                params.set('language', 'english');
+                const newUrl = `${url.origin}${url.pathname}?${params.toString()}`;
+                window.location.href = newUrl;
+            } else if (language === "english") {
+                const currentUrl = window.location.href;
+                const url = new URL(currentUrl);
+                const params = new URLSearchParams(url.search);
+                params.set('language', 'catalan');
+                const newUrl = `${url.origin}${url.pathname}?${params.toString()}`;
+                window.location.href = newUrl;
+            }
+        }
+
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = 'none';
@@ -310,6 +363,8 @@
                 loadMedia(filter);
             });
         });
+
+        window.onload = translate;
 
         loadMedia();
     </script>
