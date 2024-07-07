@@ -134,6 +134,59 @@
                 flex: none;
             }
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: column;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 99;
+            margin: auto;
+            padding: 20px;
+            min-width: 80%;
+            max-width: 80%;
+            min-height: 80%;
+            max-height: 90%;
+            background-color: var(--color-background);
+            box-shadow: 0 0 10px 0 rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: auto;
+        }
+
+        .modal-content img,
+        .modal-content video {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -171,17 +224,26 @@
         </div>
     </div>
 
+    <!-- Modal structure -->
+    <div id="mediaModal" class="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
     <script>
-        const imageDirectory = '/assets/images/';
-        const videoDirectory = '/assets/videos/';
+        const imageDirectory = './assets/images/';
+        const videoDirectory = './assets/videos/';
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
         const videoExtensions = ['mp4', 'webm', 'ogg'];
 
         const imageList = document.getElementById('imageList');
         const buttons = document.querySelectorAll('.query');
+        const modal = document.getElementById('mediaModal');
+        const modalContent = document.getElementById('modalContent');
+        const span = document.getElementsByClassName('close')[0];
 
         function loadMedia(filter = 'all') {
-            fetch('/data/media.json')
+            fetch('./data/media.json')
                 .then(response => response.json())
                 .then(media => {
                     displayMedia(media, filter);
@@ -192,7 +254,7 @@
         }
 
         function displayMedia(media, filter = 'all') {
-            const divs = Array.from(imageList.querySelectorAll('.images > div'));
+            const divs = Array.from(imageList.querySelectorAll('.f, .s, .t'));
             divs.forEach(div => div.innerHTML = '');
 
             let items = media.filter(item => {
@@ -204,25 +266,42 @@
 
             items.forEach((item, index) => {
                 const extension = item.split('.').pop().toLowerCase();
-                const a = document.createElement("a");
                 const mediaElement = imageExtensions.includes(extension) ? document.createElement('img') : document.createElement('video');
-
-                a.href = (imageExtensions.includes(extension) ? imageDirectory : videoDirectory) + item;
-                a.className = "media-link";
-                a.target = "_blank";
-                a.rel = "noopener noreferrer";
 
                 mediaElement.src = (imageExtensions.includes(extension) ? imageDirectory : videoDirectory) + item;
                 mediaElement.alt = item;
                 mediaElement.loading = "lazy";
+                mediaElement.onclick = () => display((imageExtensions.includes(extension) ? imageDirectory : videoDirectory) + item, extension);
 
                 if (mediaElement.tagName === 'VIDEO') {
                     mediaElement.controls = true;
                 }
 
-                a.appendChild(mediaElement);
-                divs[index % divs.length].appendChild(a);
+                divs[index % divs.length].appendChild(mediaElement);
             });
+        }
+
+        function display(media, extension) {
+            modalContent.innerHTML = '';
+            const mediaElement = imageExtensions.includes(extension) ? document.createElement('img') : document.createElement('video');
+            mediaElement.src = media;
+
+            if (mediaElement.tagName === 'VIDEO') {
+                mediaElement.controls = true;
+            }
+
+            modalContent.appendChild(mediaElement);
+            modal.style.display = 'block';
+        }
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
         }
 
         buttons.forEach(button => {
