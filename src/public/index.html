@@ -181,7 +181,7 @@
         const buttons = document.querySelectorAll('.query');
 
         function loadMedia(filter = 'all') {
-            fetch('/data/images.json')
+            fetch('/data/media.json')
                 .then(response => response.json())
                 .then(media => {
                     displayMedia(media, filter);
